@@ -21,11 +21,14 @@
               <a-menu-item key="index">
                 <router-link to="/">首页</router-link>
               </a-menu-item>
+              <a-menu-item key="pdf">
+                <router-link to="/pdf">PDF工具</router-link>
+              </a-menu-item>
               <a-menu-item key="watermark">
                 <router-link to="/watermark">数字水印</router-link>
               </a-menu-item>
-              <a-menu-item key="pdf">
-                <router-link to="/pdf">PDF</router-link>
+              <a-menu-item key="my-notes">
+                <a href="https://liuyuhe.xyz" target="_blank">我的笔记</a>
               </a-menu-item>
             </a-menu>
           </a-col>
