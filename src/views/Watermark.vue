@@ -177,7 +177,7 @@ export default {
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
-
+        // TODO: 获取图片的URL
       }
     },
     handleUploadWatermarkChange(info) {
@@ -187,7 +187,7 @@ export default {
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
-
+        // TODO: 获取图片的URL
       }
     },
     handleUploadImageWithWatermarkChange(info) {
@@ -197,7 +197,7 @@ export default {
       }
       if (info.file.status === 'done') {
         // Get this url from response in real world.
-
+        // TODO: 获取图片的URL
       }
     },
     beforeUpload(file) {
@@ -234,6 +234,7 @@ export default {
           }
           this.loading = true
           // 发送请求
+          // TODO: 向后端发送请求
         }
       })
     },
@@ -249,7 +250,7 @@ export default {
           }
           this.loading = true
           // 发送请求
-
+          // TODO: 向后端发送请求
         }
       })
     }
