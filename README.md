@@ -2,7 +2,7 @@
 
 
 
-<img src="assets/logo.png" align="center" />
+<div align="center"><img src="assets/logo.png" width="120px"/></div>
 
 ʕ•̫͡•ʔ-̫͡-ʕ•͓͡•ʕ•̫͡•ʔ-̫͡-ʕ•͓͡•ʔ-̫͡-ʔ
 
