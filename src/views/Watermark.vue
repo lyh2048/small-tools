@@ -128,6 +128,9 @@
 </template>
 
 <script>
+import {UPLOAD_PATH, BASE_WEBSOCKET_URL} from "@/common/constant"
+import axios from "axios"
+
 export default {
   name: 'Watermark',
   data() {
@@ -148,7 +151,9 @@ export default {
           index: 2
         },
       ],
-      uploadPath: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      uuid: '',
+      socket: null,
+      uploadPath: UPLOAD_PATH,
       imageUrl: '',
       uploadImageLoading: false,
       watermarkUrl: '',
@@ -176,8 +181,8 @@ export default {
         return;
       }
       if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        // TODO: 获取图片的URL
+        const resp = info.file.response
+        this.imageUrl = resp.data
       }
     },
     handleUploadWatermarkChange(info) {
@@ -186,8 +191,8 @@ export default {
         return;
       }
       if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        // TODO: 获取图片的URL
+        const resp = info.file.response
+        this.watermarkUrl = resp.data
       }
     },
     handleUploadImageWithWatermarkChange(info) {
@@ -196,8 +201,8 @@ export default {
         return;
       }
       if (info.file.status === 'done') {
-        // Get this url from response in real world.
-        // TODO: 获取图片的URL
+        const resp = info.file.response
+        this.imageWithWatermarkUrl = resp.data
       }
     },
     beforeUpload(file) {
@@ -234,7 +239,17 @@ export default {
           }
           this.loading = true
           // 发送请求
-          // TODO: 向后端发送请求
+          axios.get('/embed', {params: {
+            imageUrl: this.imageUrl, watermarkUrl: this.watermarkUrl, password: password, uuid: this.uuid
+            }}).then(resp => {
+              if (resp.data.code !== 0) {
+                this.$message.error(resp.data.message)
+              }
+          }).catch(err => {
+            console.log(err)
+            this.$message.error('无法发送请求')
+            this.loading = false
+          })
         }
       })
     },
@@ -250,9 +265,62 @@ export default {
           }
           this.loading = true
           // 发送请求
-          // TODO: 向后端发送请求
+          axios.get('/extract', {params: {
+              imageUrl: this.imageWithWatermarkUrl, password: password, uuid: this.uuid
+            }}).then(resp => {
+            if (resp.data.code !== 0) {
+              this.$message.error(resp.data.message)
+            }
+          }).catch(err => {
+            console.log(err)
+            this.$message.error('无法发送请求')
+            this.loading = false
+          })
         }
       })
+    },
+    initWebSocket() {
+      if (typeof(WebSocket) === 'undefined') {
+        console.log('您的浏览器不支持Websocket')
+      } else {
+        this.socket = new WebSocket(`${BASE_WEBSOCKET_URL}/${this.uuid}`)
+        this.socket.onopen = this.websocketOpen
+        this.socket.onerror = this.websocketError
+        this.socket.onmessage = this.handleMessage
+      }
+    },
+    websocketOpen() {
+      console.log('socket连接成功')
+    },
+    websocketError() {
+      console.log('socket连接错误')
+    },
+    websocketClose() {
+      console.log('socket连接已关闭')
+    },
+    handleMessage(msg) {
+      const data = msg.data
+      const resp = JSON.parse(data)
+      this.loading = false
+      if (resp.code === 0) {
+        this.$message.success(resp.msg)
+        window.open(resp.url, "_blank")
+      } else {
+        this.$message.error(resp.msg)
+      }
+    }
+  },
+  created() {
+    axios.get('/uuid').then(resp => {
+      this.uuid = resp.data.data
+      this.initWebSocket()
+    }).catch(err => {
+      console.log(err)
+    })
+  },
+  destroyed() {
+    if (this.socket !== null) {
+      this.socket.onclose = this.websocketClose
     }
   }
 }

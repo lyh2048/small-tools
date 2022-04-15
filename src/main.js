@@ -4,6 +4,10 @@ import router from './router'
 import store from './store'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import axios from "axios"
+import {BASE_URL} from "./common/constant";
+
+axios.defaults.baseURL = BASE_URL
 
 Vue.config.productionTip = false
 
